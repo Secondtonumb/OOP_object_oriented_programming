@@ -1,0 +1,167 @@
+<<第三章 数据的输入与输出>>
+
+* "流"
+文本流 --> 文本流是一个字符序列
+二进制流 
+* ”文件“
+可以将文件与特定的“流”之间的联系断开
+** 文件操作完之后，不关闭，有可能影响其他文件打开。
+** 利用的是缓冲文件系统，没有关闭的话，读写数据在内存中而并没有保存在文件中去。
+* 3.1 标准输入和输出
+** istream
+** ostream
+** iostream
+<< 插入运算符
+>> 提取运算符
+
+不需要制定数据类型
+
+可以连续使用 >> << 
+* 2 格式化输出 width()
+
+** (1)利用 cout对象的width()成员函数可以设定输出域宽
+
+cout.width(10);
+cout << x;
+
+每次输出完成后被清除。
+
+清除 cout.width(0);
+
+
+** (2)填充文字的指定fill()
+例 cout.fill('$')
+一次设定 始终有效
+** (3) 精度的设定 precision()
+cout.precision(5);
+cout << 1234.56789 << "\n";
+** (4) 数据的刷新flush()
+用于输出缓冲区
+
+cout << "continue(Y/n):";
+cout.flush();
+cin >> ch;
+
+* 3 控制符处理
+ int dt = 255;
+ cout << dee << dt << "\n";
+ cout << hex << dt << "\n";
+
+oct 8
+dec 10
+hex 16
+ws no space
+flush
+endl 输出时追加\n 并刷新缓存区。
+
+cin >> hex >> x 表示输入的是16就知书
+
+想要使用控制符 必须包含“iostream.h”
+
+endl 的作用同‘\n’ 相同
+
+* 3.1.2 字符的输入和输出 get() 和 put()
+
+get() 是cin对象的成员函数，用于输入操作
+put() 是 cout...
+
+char ch;
+ while (cin.get(ch)){
+ cout.put(ch);
+ }
+
+* 3.1.3 字符串的输入和输出 get() 和 getline()
+
+#+BEGIN_SRC C++
+istream& get(char *ss, int count ,char delim='\n');
+## ss 缓冲区参数
+## count 最大字符数
+## delim 缺省参数(默认参数)
+istream& getline(char *ss, int count ,char delim='\n');
+#+END_SRC
+get() 不读入delim"\n" geiline()读
+
+* 3.2 文件
+与文件有短的流类
+** ifstream 文件输入用用流类
+** ofstream 
+** fstream
+fstream.h
+** 3.2.1 文件打开和关闭
+open() 
+close()
+
+#+BEGIN_SRC C++
+void open(const char *fname, int openmode=ios::in, int prot = filebut::openprot);
+/*
+fname: 指向文件名的指针
+openmode 打开模式 可缺省
+prot 保护模式可缺省
+ios::in 已输入方式打开文件 枚举？
+ios:: binary  二进制
+ios::app 追加方式 没有办法修改已有的部分
+ios::ate
+ios::in 即使存在同名文件也不删除
+ios::out 以输出方式打开文件
+ios::trune
+ios::noreplace
+ios::binary
+*/
+#+END_SRC
+
+#+BEGIN_SRC C++
+ofstream fout("OUTPUT",ios::out);
+ifstream fin("INPUT",ios::out);
+fstream file("INOUT", ios::in|ios::out); // 按位或
+#+END_SRC
+
+** 3.2.2文件的输入和输出
+#+BEGIN_SRC C++
+ofstream fout;
+ifstream fin;
+char ch;
+fin.open("mydata1.txt");
+fout.open("mydata2.txt");
+
+fin.get(ch);
+fout.put(ch);
+
+fin.close();
+fout.close();
+#+END_SRC
+
+说明: 在进行文件输入输出时，可以利用seekp()或tellp()来设置或得到输出流的文件指针，
+可以利用tellp()tellg()
+
+#+BEGIN_SRC C++
+fout.sekkp(100L);
+fin.seekg(200L);
+#+END_SRC
+* 3.2.3 错误处理
+
+good() 正常
+bad() 重大错误
+fail() 可以恢复的错误
+eof() 文件结束
+rdstste() 返回错误标志
+#+BEGIN_SRC C++
+## 判断是否出错
+if(fin.fail())
+if(!fin.good())
+#+END_SRC
+
+<<数组指针和引用>>
+static int data[5];
+数组内元素都是0
+
+二维数组的第二维不能缺省
+
+int p,*p1, **p2;
+p = 10;
+p1 = &p;
+p2 = &p1;
+
+** 指针和数组
+()函数运算符 优先级高
+[]数组运算符 优先级高
+*指针运算符 优先级低
