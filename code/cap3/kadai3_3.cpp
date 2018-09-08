@@ -16,8 +16,11 @@ int main(int argc, char *argv[]){
     cout << "Cannot open file" <<endl;
     return 1;
   }
-  while(! in.fail()){
-    in.get(ch);
+  // while(! in.fail()){
+  //   in.get(ch);
+  //   cout << ch;
+  // }
+  while(in.get()){
     cout << ch;
   }
   in.close();
