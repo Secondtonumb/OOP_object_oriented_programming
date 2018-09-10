@@ -10,8 +10,7 @@ int main(int argc, char *argv[]){
   for(i = 0; i < 3; i++){
     for(j = 0; j < 3; j++){
       // cout << p[i][j] << endl;
-      cout << *(*(a + i) + j) <<endl;
+      cout << *(*(a + i) + j) << endl;
     }
   }
-  
 }
