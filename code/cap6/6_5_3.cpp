@@ -38,7 +38,7 @@ int main(){
   f2(c);
   xyz n(1, 2, 3);
   cout << n.getx() << n.gety() << n.getz() << endl;
-  n = g();
+  n = g(); //这里调用的结果好像不对。。
   cout << n.getx() << n.gety() << n.getz() << endl;
 }
   
