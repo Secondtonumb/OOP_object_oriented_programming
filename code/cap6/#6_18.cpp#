@@ -1,0 +1,16 @@
+#include <iostream>
+
+class cAddM{
+  int va;
+  int vb;
+public:
+  cAddM(){va = 0; vb = 0;}
+  cAddM(int a, int b){va = a; vb = b;}
+  void set_va(int dt) {va = dt;}
+  void set_vb(int dt) {vb = dt;}
+  int get_va(){return va;}
+  int get_vb(){return vb;}
+  void disp()l
+    cAddM operator+(cAddM )
+  
+}
