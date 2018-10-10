@@ -60,7 +60,3 @@ int main(){
   c = a + 2;
   c.disp();
 }  
-
-  
-
-  
