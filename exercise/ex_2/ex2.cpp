@@ -41,7 +41,7 @@ Array::Array(){
     }
 }
 
-void Array:: input(){
+void Array::input(){
     int i;
     for(i = 0; i < 10; i++){
         cin >> *(a + i);
