@@ -5,11 +5,11 @@ class Complex{
   double real;
   double imag;
 public:
-  Complex(){
-    real = 0;
-    imag = 0;
-  }
-  Complex(double a, double b){
+  // Complex(){
+  //   real = 0;
+  //   imag = 0;
+  // }
+  Complex(double a=0, double b=0){
     real = a;
     imag = b;
   }
