@@ -13,6 +13,7 @@ typedef struct student{
   bool gender;
   int birth;
   int grade[GRADE_LENGTH];
+  int grade_sum;
 }stu_struct;
 
 void data_input(stu_struct &x){
@@ -33,16 +34,18 @@ void data_input(stu_struct &x){
   while(x.birth < 19000000 || x.birth > 20190000){
     cin >> x.birth;
   }
+  x.grade_sum = 0;
   for(i = 0; i < GRADE_LENGTH; i++){
     cin >> x.grade[i];
-    if(x.grade[i] < 0 || x.grade[i] > 100) exit(1);
+    x.grade_sum += x.grade[i];
+    // if(x.grade[i] < 0 || x.grade[i] > 100) exit(1);
   }
 } 
 
 class STU_NODE{
   friend class LIST;
   STU_NODE *next;
-  stu_struct stu; 
+  stu_struct stu;
 public:
   STU_NODE();
   STU_NODE(stu_struct x);
@@ -59,6 +62,7 @@ public:
     for(i = 0; i < GRADE_LENGTH; i++){
       printf("GRADE %d: %d\n", i, stu.grade[i]);
     }
+    printf("GRADE_SUM: %d\n", stu.grade_sum);
   }
 };
 STU_NODE::STU_NODE(){
@@ -70,6 +74,7 @@ STU_NODE::STU_NODE(){
   for(i = 0; i < GRADE_LENGTH; i++){
     stu.grade[i] = 0;
   }
+  stu.grade_sum = 0;
 }
 STU_NODE::STU_NODE(stu_struct x){
   strcpy(stu.name, x.name);
@@ -80,6 +85,7 @@ STU_NODE::STU_NODE(stu_struct x){
   for(i = 0; i < GRADE_LENGTH; i++){
     stu.grade[i] = x.grade[i];
   }
+  stu.grade_sum = x.grade_sum;
 }
 STU_NODE::STU_NODE(const STU_NODE &another){
   strcpy(stu.name, another.stu.name);
@@ -90,7 +96,9 @@ STU_NODE::STU_NODE(const STU_NODE &another){
   for(i = 0; i < GRADE_LENGTH; i++){
     stu.grade[i] = another.stu.grade[i];
   }
+  stu.grade_sum = another.stu.grade_sum;
 }
+
 void STU_NODE::input(){
   stu_struct basic_info;
   data_input(basic_info);
@@ -122,8 +130,9 @@ public:
     }
     return n;
   }
-  LIST &Clear();
+  // LIST &Sort(int);
   void Print();
+  LIST &Clear();
 };
 
 LIST &LIST::Insert(const STU_NODE &x){
@@ -162,12 +171,9 @@ STU_NODE &LIST::Find(int id_num){
 LIST &LIST::Delete(char *s){
   STU_NODE *ptr = first;
   STU_NODE *pre;
-  if(ptr->next == last){
-    if(strcmp(ptr->stu.name, s) == 0){
-      ptr = first->next;
-      delete first;
-      first = ptr;
-    }
+  if(strcmp(ptr->stu.name, s) == 0){
+    delete first;
+    first = ptr->next;
   }
   while(ptr->next != last){
     if(strcmp(ptr->next->stu.name, s) == 0){
@@ -180,17 +186,13 @@ LIST &LIST::Delete(char *s){
   }
   return(*this);
 }
-
 LIST &LIST::Delete(int id_num){
   STU_NODE *ptr = first;
   STU_NODE *pre;
-  if(ptr->next== last && id_num == ptr->stu.id ){
-    first = last;
-    delete ptr;
-    return (*this);
+  if(id_num == ptr->stu.id ){
+    delete first;
+    first = ptr->next;
   }
-  else 
-  ptr = first;
   while(ptr->next != last){
     if(id_num == ptr->next->stu.id){
       pre = ptr;
@@ -201,6 +203,27 @@ LIST &LIST::Delete(int id_num){
     else ptr = ptr->next;
   }
   return(*this);
+}
+
+// LIST &LIST::Sort(){
+//   STU_NODE *p = first;
+//   while(p->next != NULL){
+//     STU_NODE *q = p;
+//     STU_NODE *temp = q->next;
+//     if(temp->stu.grade_sum > temp->next->stu.grade_sum){
+//       temp = temp->next;
+//     }
+//   }
+// }
+
+void LIST::Print(){
+  puts("==== Print List ====");
+  STU_NODE *ptr = first;
+  while(ptr != last){
+    ptr->print();
+    putchar('\n');
+    ptr = ptr->next;
+  }
 }
 
 LIST &LIST::Clear(){
@@ -214,15 +237,7 @@ LIST &LIST::Clear(){
   return(*this);
 }
 
-void LIST::Print(){
-  puts("==== Print List ====");
-  STU_NODE *ptr = first;
-  while(ptr != last){
-    ptr->print();
-    putchar('\n');
-    ptr = ptr->next;
-  }
-}
+
 int main(){
   STU_NODE a; // Default Constructor
   a.input();
@@ -249,5 +264,6 @@ int main(){
   cout << ls.Count() << endl;
   ls.Delete(201487028);
   ls.Print();
+  ls.Delete("liu").Print();
   return 0;
 }
