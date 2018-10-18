@@ -22,17 +22,14 @@ void data_input(stu_struct &x){
   cin >> x.name;
   cout << "INPUT ID" << endl;
   cin >> x.id;
-  cout << "INPUT GENDER" << endl;
+  cout << "INPUT GENDER(1: Male, 0: Female)" << endl;
   cin >> x.gender;
-  while(((x.gender == 0)||(x.gender == 1)) != 1) {
-    cout << "INPUT GENDER" << endl;
-    cin >> x.gender;
-    cout << x.gender << endl;
-  }
   cout << "INPUT BIRTH" << endl;
   cin >> x.birth;
   x.grade_sum = 0;
   for(i = 0; i < GRADE_LENGTH; i++){
+    cout << "Input Grade "
+	 << "(" << i + 1 << "/" << GRADE_LENGTH << ")";
     cin >> x.grade[i];
     x.grade_sum += x.grade[i];
   }
@@ -46,29 +43,20 @@ public:
   STU_NODE();
   STU_NODE(stu_struct x);
   STU_NODE(const STU_NODE &another);
-  void input();
-  void print(void){
-    printf("STUDENT'S NAME: %s\n", stu.name);
-    printf("STUDENT'S ID: %d\nGENDER: %d\n", stu.id, stu.gender);
-    printf("STUDENT'S BIRTH %d\n", stu.birth);
-    int i;
-    for(i = 0; i < GRADE_LENGTH; i++){
-      printf("GRADE %d: %d\n", i, stu.grade[i]);
-    }
-    printf("GRADE_SUM: %d\n", stu.grade_sum);
-  }
+  void input(void);
+  void print(void);
 };
 
 STU_NODE::STU_NODE(){
-  strcpy(stu.name, "temp");
+  strcpy(stu.name, "Underfined");
   stu.id = 0;
-  stu.gender = 1;
+  stu.gender = -1;
   stu.birth= 19000101;
   int i;
   for(i = 0; i < GRADE_LENGTH; i++){
-    stu.grade[i] = 0;
+    stu.grade[i] = -1;
   }
-  stu.grade_sum = 0;
+  stu.grade_sum = -1;
 }
 
 STU_NODE::STU_NODE(stu_struct x){
@@ -95,10 +83,25 @@ STU_NODE::STU_NODE(const STU_NODE &another){
   stu.grade_sum = another.stu.grade_sum;
 }
 
-void STU_NODE::input(){
+void STU_NODE::input(void){
   stu_struct basic_info;
   data_input(basic_info);
   *this = basic_info; 
+}
+
+void STU_NODE::print(void){
+  if(strcmp(stu.name, "Underfined") != 0){
+    printf("STUDENT'S NAME: %s\n", stu.name);
+    printf("STUDENT'S ID: %d\nGENDER: %d\n", stu.id, stu.gender);
+    printf("STUDENT'S BIRTH %d\n", stu.birth);
+    int i;
+    for(i = 0; i < GRADE_LENGTH; i++){
+      printf("GRADE %d: %d\n", i, stu.grade[i]);
+    }
+    printf("GRADE_SUM: %d\n", stu.grade_sum);
+  }
+  else
+    printf("Error(No object Found)\n");
 }
 
 class LIST{
@@ -126,8 +129,8 @@ public:
     }
     return n;
   }
-  void Print_highest_grade();
-  void Print_lowest_grade();
+  int Print_highest_grade();
+  int Print_lowest_grade();
   void Print();
   LIST &Clear();
 };
@@ -149,7 +152,7 @@ STU_NODE &LIST::Find(char *s){
     else
       ptr = ptr->next;
   }
-  cout << "COULD'T FIND" << endl;
+  cout << "\n==== COULD'T FIND ====\n" << endl;
   return *last;
 }
 
@@ -162,25 +165,30 @@ STU_NODE &LIST::Find(int id_num){
     else
       ptr = ptr->next;
   }
-  cout << "\nCOULD.T FIND\n" << endl;
+  cout << "\n==== COULD.T FIND ====\n" << endl;
   return *last;
 }
 
-LIST &LIST::Delete(char *s){
+LIST &LIST::Delete(char s[]){
   STU_NODE *ptr = first;
   STU_NODE *pre = first;
   if(strcmp(ptr->stu.name, s) == 0){
     delete first;
-    first = ptr->next;
+    first = last;
     return (*this);
   }
-  else 
-  while(pre->next != last){
-    ptr = pre->next;
-    if(strcmp(ptr->stu.name, s) == 0){
-      pre->next = ptr->next;
+  else if(first == last){
+    return (*this);
+  }
+  else{
+    while(pre->next != last){
+      ptr = pre->next;
+      if(strcmp(ptr->stu.name, s) == 0){
+	pre->next = ptr->next;
+	delete ptr;
+      }
+      pre = pre->next;
     }
-    pre = pre->next;
   }
   return(*this);
 }
@@ -189,56 +197,73 @@ LIST &LIST::Delete(int id_num){
   STU_NODE *ptr = first;
   STU_NODE *pre = first;
   if(id_num == ptr->stu.id){
-    delete first;
-    first = ptr->next;
+    // delete first;
+    first = last;
+    return (*this);
+  }
+  else if(first == last){
     return (*this);
   }
   while(pre->next != last){
     ptr = pre->next;
     if(id_num == ptr->stu.id){
       pre->next = ptr->next;
+      delete ptr;
     }
     pre = pre->next;
   }
   return(*this);
 }
 
-void LIST::Print_highest_grade(){
+int LIST::Print_highest_grade(){
   STU_NODE *ptr = first;
   int temp = ptr->stu.grade_sum;
+  if(first == last) {
+    cout << "\n==== List is Empty ====\n" << endl;
+    return 1;
+  }
   while(ptr->next != last){
     if(temp < ptr->next->stu.grade_sum) temp = ptr->next->stu.grade_sum;
     ptr = ptr->next;
   }
   ptr = first;
-  while(ptr->next != last){
+  while(ptr != last){
     if(ptr->stu.grade_sum == temp) ptr->print();
     ptr = ptr->next;
   }
+  return 1;
 }
 
-void LIST::Print_lowest_grade(){
+int LIST::Print_lowest_grade(){
   STU_NODE *ptr = first;
   int temp = ptr->stu.grade_sum;
+  if(first == last) {
+    cout << "\n==== List is Empty ====\n" << endl;
+    return 1;
+  }
   while(ptr->next != last){
-    if(temp < ptr->next->stu.grade_sum) temp = ptr->next->stu.grade_sum;
+    if(temp > ptr->next->stu.grade_sum) temp = ptr->next->stu.grade_sum;
     ptr = ptr->next;
   }
   ptr = first;
-  while(ptr->next != last){
+  while(ptr != last){
     if(ptr->stu.grade_sum == temp) ptr->print();
     ptr = ptr->next;
   }
+  return 1;
 }
 
 void LIST::Print(){
-  puts("==== Print List ====");
   STU_NODE *ptr = first;
-  if(ptr == last) cout << "Empty" << endl;
-  while(ptr != last){
-    ptr->print();
-    putchar('\n');
-    ptr = ptr->next;
+  if(ptr == last) cout << "\n===== List is Empty ! ====\n" << endl;
+  else{
+    puts("==== List Begin ====");
+    while(ptr != last){
+      ptr->print();
+      putchar('\n');
+      ptr = ptr->next;
+    }
+    puts("==== List End ====");
   }
 }
 
@@ -254,32 +279,92 @@ LIST &LIST::Clear(){
 }
 
 int main(){
-  STU_NODE a; // Default Constructor
-  //a.input();
-  STU_NODE b;
-  //b.input();
-  STU_NODE c, d;
-  a.input();
-  b.input();
-  c.input();
-  d.input();
-  // b = c;
-  // b.print();
+  cout << "++++ Welcome to Student Management System ++++ \n" << endl;
   LIST ls;
-  ls.Insert(a);
-  ls.Insert(b);
-  ls.Insert(c);
-  ls.Insert(d);
-  ls.Print();
+  char struction = '\0';
+  while(1){
+    cout << "\n++++ Select an Function ++++" << endl;
+    cout << "Insert:I\t Print:P\t Find:F\n" 
+	 << "Delete:D\t Highest:H\t Lowest:L " << endl;
+    cout << "++++ Quit:Q ++++\n" << endl;
+    cin >> struction;
 
-  // ls.Find("geng").print();
-  // ls.Find(12).print();
-  // ls.Delete("liu").Print();
-  // ls.Delete(1).Print();
+    if(struction == 'I'){
+      STU_NODE i;
+      i.input();
+      ls.Insert(i);
+    }
+    
+    else if(struction == 'P'){
+      ls.Print();
+    }
 
-  // cout << ls.Count() << endl;
-  
-  ls.Print_highest_grade();
-  ls.Print_lowest_grade();
-  return 0;
+    else if(struction == 'F'){
+      char temp[2];
+      temp[0] = '\0';
+      while(1){
+	if(strcmp(temp, "N") == 0){
+	  char name[NAME_LENGTH];
+	  cout << "Input a name" << endl;
+	  cin >> name;
+	  ls.Find(name).print();
+	  break;
+	}
+	else if(strcmp(temp, "ID") == 0){
+	  int id;
+	  cout << "Input an ID" << endl;
+	  cin >> id;
+	  ls.Find(id).print();
+	  break;
+	}
+	else{
+	  cout << "Find by Name:N  Find by ID:ID" << endl;
+	  cin >> temp;
+	}
+      }
+    }
+    
+    else if(struction == 'D'){
+      char temp[2];
+      temp[0] = '\0';
+      while(1){
+	if(strcmp(temp, "N") == 0){
+	  char name[NAME_LENGTH];
+	  cout << "Input a name" << endl;
+	  cin >> name;
+	  ls.Delete(name);
+	  ls.Print();
+	  break;
+	}
+	else if(strcmp(temp, "ID") == 0){
+	  int id;
+	  cout << "Input an ID" << endl;
+	  cin >> id;
+	  ls.Delete(id);
+	  ls.Print();
+	  break;
+	}
+	else{
+	  cout << "Delect by Name:N  Delect by ID:ID" << endl;
+	  cin >> temp;
+	}
+      }
+    }
+
+    else if(struction == 'H'){
+      ls.Print_highest_grade();
+    }
+    
+    else if(struction == 'L'){
+      ls.Print_lowest_grade();
+    }
+
+    else if(struction == 'Q'){
+      cout << "Are you sure to exit? [Y/n]" << endl;
+      char e;
+      cin >> e;
+      if(e == 'Y') exit(0);
+      else struction = '\0';
+    }
+  }
 }
