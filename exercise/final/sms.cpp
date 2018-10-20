@@ -170,46 +170,47 @@ STU_NODE &LIST::Find(int id_num){
 }
 
 LIST &LIST::Delete(char s[]){
-  STU_NODE *ptr = first;
-  STU_NODE *pre = first;
-  if(strcmp(ptr->stu.name, s) == 0){
+  STU_NODE *ptr;
+  while(strcmp(first->stu.name, s) == 0){
+    ptr = first;
+    ptr = ptr->next;
     delete first;
-    first = last;
+    first = ptr;
+  }
+  if(first == last){
     return (*this);
   }
-  else if(first == last){
-    return (*this);
-  }
-  else{
-    while(pre->next != last){
-      ptr = pre->next;
-      if(strcmp(ptr->stu.name, s) == 0){
-	pre->next = ptr->next;
-	delete ptr;
-      }
-      pre = pre->next;
+  STU_NODE *pre = first;
+  while(pre->next != last){
+    ptr = pre->next;
+    if(strcmp(ptr->stu.name, s) == 0){
+      pre->next = ptr->next;
+      delete ptr;
     }
+    pre = pre->next; 
   }
   return(*this);
 }
 
 LIST &LIST::Delete(int id_num){
-  STU_NODE *ptr = first;
+  STU_NODE *ptr;
+  while(id_num == first->stu.id){
+    ptr = first;
+    ptr = ptr->next;
+    delete first;
+    first = ptr;
+  }
+  if(first == last){
+    return (*this);
+  }
   STU_NODE *pre = first;
-  if(id_num == ptr->stu.id){
-    // delete first;
-    first = last;
-    return (*this);
-  }
-  else if(first == last){
-    return (*this);
-  }
   while(pre->next != last){
     ptr = pre->next;
     if(id_num == ptr->stu.id){
       pre->next = ptr->next;
       delete ptr;
     }
+
     pre = pre->next;
   }
   return(*this);
@@ -332,16 +333,14 @@ int main(){
 	  char name[NAME_LENGTH];
 	  cout << "Input a name" << endl;
 	  cin >> name;
-	  ls.Delete(name);
-	  ls.Print();
+	  ls.Delete(name).Print();
 	  break;
 	}
 	else if(strcmp(temp, "ID") == 0){
 	  int id;
 	  cout << "Input an ID" << endl;
 	  cin >> id;
-	  ls.Delete(id);
-	  ls.Print();
+	  ls.Delete(id).Print();
 	  break;
 	}
 	else{
