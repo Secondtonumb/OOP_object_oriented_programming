@@ -7,6 +7,7 @@
 
 using namespace std;
 
+// Define student struct to manage data easily
 typedef struct student{
   char name[NAME_LENGTH];
   int id;
@@ -16,6 +17,7 @@ typedef struct student{
   int grade_sum;
 }stu_struct;
 
+//Input data into structure
 void data_input(stu_struct &x){
   int i;
   cout << "INPUT NAME" << endl;
@@ -35,6 +37,7 @@ void data_input(stu_struct &x){
   }
 } 
 
+// Student Node
 class STU_NODE{
   friend class LIST;
   STU_NODE *next;
@@ -47,6 +50,7 @@ public:
   void print(void);
 };
 
+// Default Constructor
 STU_NODE::STU_NODE(){
   strcpy(stu.name, "Underfined");
   stu.id = 0;
@@ -59,6 +63,7 @@ STU_NODE::STU_NODE(){
   stu.grade_sum = -1;
 }
 
+// Transform Constructor
 STU_NODE::STU_NODE(stu_struct x){
   strcpy(stu.name, x.name);
   stu.id = x.id;
@@ -71,6 +76,7 @@ STU_NODE::STU_NODE(stu_struct x){
   stu.grade_sum = x.grade_sum;
 }
 
+// Copy Constructor
 STU_NODE::STU_NODE(const STU_NODE &another){
   strcpy(stu.name, another.stu.name);
   stu.id = another.stu.id;
@@ -104,17 +110,18 @@ void STU_NODE::print(void){
     printf("Error(No object Found)\n");
 }
 
+// Class List 
 class LIST{
   STU_NODE *first;
   STU_NODE *last;
 public:
   LIST(){
     first = last = new STU_NODE;
-  }
+  }// Default Constructor
   ~LIST(){
     Clear();
     delete first;
-  }
+  }// Default Destructor
   LIST &Insert(const STU_NODE &);
   STU_NODE &Find(char *); //find by name
   STU_NODE &Find(int); // find by id
@@ -135,6 +142,7 @@ public:
   LIST &Clear();
 };
 
+// Insert a node from head
 LIST &LIST::Insert(const STU_NODE &x){
   STU_NODE *ptr = first;
   first = new STU_NODE;
@@ -143,6 +151,7 @@ LIST &LIST::Insert(const STU_NODE &x){
   return(*this);
 }
 
+// Find A Node By attribute "name"
 STU_NODE &LIST::Find(char *s){
   STU_NODE *ptr = first;
   while(ptr != last){
@@ -156,6 +165,7 @@ STU_NODE &LIST::Find(char *s){
   return *last;
 }
 
+// Find A Node by Attribute "id"
 STU_NODE &LIST::Find(int id_num){
   STU_NODE *ptr = first;
   while(ptr != last){
@@ -169,6 +179,7 @@ STU_NODE &LIST::Find(int id_num){
   return *last;
 }
 
+// Delete A Node By attribute "name"
 LIST &LIST::Delete(char s[]){
   STU_NODE *ptr;
   while(strcmp(first->stu.name, s) == 0){
@@ -192,6 +203,7 @@ LIST &LIST::Delete(char s[]){
   return(*this);
 }
 
+// Delete A Node By attribute "int"
 LIST &LIST::Delete(int id_num){
   STU_NODE *ptr;
   while(id_num == first->stu.id){
