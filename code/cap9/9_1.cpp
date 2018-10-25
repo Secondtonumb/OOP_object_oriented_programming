@@ -1,8 +1,9 @@
 #include <iostream>
 using namespace std;
-templete <class T>
+
+template <class T>
 T mindt(T x, T y){
-  T = mv;
+  T mv;
   mv = (x < y) ? x : y;
   return mv;
 }
